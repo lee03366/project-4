@@ -1,3 +1,4 @@
+
 function Prompt() {
 	$("#dialog-form").dialog({
 		autoOpen: true,
@@ -55,13 +56,26 @@ function Init(crime_api_url){
 			let neighborhoodCrimeCount = Object.entries(_.groupBy(Object.values(initial_crime), 'neighborhood_number')).map(([k, v]) => v.length);
 			
 			for(let i = 0; i < Object.keys(initial_crime).length; i++) {
-				const cur_crime = initial_crime[Object.keys(initial_crime)[i]];
+				var cur_crime = initial_crime[Object.keys(initial_crime)[i]];
 				//Change neighborhood_number into the name of the neighborhood
 				cur_crime.neighborhood_number=neighborhoods["N"+cur_crime.neighborhood_number];
+				
+				if(cur_crime.code<500 || (cur_crime.code>=800&&cur_crime.code<900)) {
+					cur_crime["violent"]=true;
+					cur_crime["property"]=false;
+					cur_crime["other"]=false;
+				}
+				else if(cur_crime.code>=500 && cur_crime.code<1800) {
+					cur_crime["violent"]=false;
+					cur_crime["property"]=true;
+					cur_crime["other"]=false;
+				}
+				else {
+					cur_crime["violent"]=false;
+					cur_crime["property"]=false;
+					cur_crime["other"]=true;
+				}		
 			}
-			
-			//Change neighborhood_number into the name of the neighborhood
-			alert("N"+initial_crime.neighborhood_number);
 			
 			const app = new Vue({
 				el:"#app",
@@ -87,7 +101,7 @@ function Init(crime_api_url){
 					},
 					handleFilter(e){
 						e.preventDefault()
-						fetch(`http://${crime_api_url}/incidents?start_date=${this.startDate}&end_date=${this.endDate}`).then(res => res.json())
+						fetch(`http://${crime_api_url}}/incidents?start_date=${this.startDate}&end_date=${this.endDate}`).then(res => res.json())
 						.then(res => {
 							this.crime_data = res;
 							//console.log('I hate this', _.groupBy(Object.values(this.crime_data), 'neighborhood_number'));

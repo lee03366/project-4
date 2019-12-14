@@ -1,5 +1,4 @@
 <html>
-
 <head>
 	<meta charset="utf-8" />
 	<title>St.Paul Map</title>
@@ -7,11 +6,22 @@
 
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
 		integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-		crossorigin="" />
+		crossorigin="" 
+	/>
+	
+	
+	<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+		integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+		crossorigin=""></script>
 
+	<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script src="map.js"></script>
+	
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<script type="application/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script type="application/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
 
 	<style>
 		body {
@@ -35,7 +45,7 @@
 
 		#crimes {
 			position: absolute;
-			top: 650;
+			top: 700;
 			bottom: 0;
 			right: 0;
 			left: 0;
@@ -46,6 +56,38 @@
 		td {
 			border: 1px solid black;
 		}
+		
+		.red { 
+			
+			background-color:red 
+
+		}
+		.yellow { 
+			
+			background-color:yellow 
+			
+		}
+		.green { 
+			
+			background-color:green 
+			
+		}
+		
+		.redp { 
+			position: absolute;
+			top: 600;
+			background-color:red 
+		}
+		.yellowp { 
+			position: absolute;
+			top: 625;
+			background-color:yellow 
+		}
+		.greenp { 
+			position: absolute;
+			top: 650;
+			background-color:green 
+		}
 	</style>
 </head>
 
@@ -53,10 +95,10 @@
 	<!-- Prompt -->
 	<div id="dialog-form">
 		<label for="name">URL for St. Paul Crime API:</label>
-		<input type="text" id="prompt_input" class="text ui-widget-content ui-corner-all" style="width: 320px;" />
+		<input type="text" id="prompt_input" class="text ui-widget-content ui-corner-all" style="width: 320px;"/>
 	</div>
 	<!-- End: Prompt -->
-
+	
 	<div id="app">
 		<div id="map"></div><br>
 
@@ -72,6 +114,10 @@
 
 		<table id="crimes">
 
+			<p class="redp">Violent</p>
+			<p class="yellowp">Property</p>
+			<p class="greenp">Other</p>
+			</br>
 			<th>Date</th>
 			<th>Time</th>
 			<th>Incident</th>
@@ -79,7 +125,7 @@
 			<th>Neighborhood</th>
 			<th>Block</th>
 
-			<tr v-for="crime in crime_data">
+			<tr v-bind:class="{'red':(crime.violent===true), 'yellow':(crime.property===true), 'green':(crime.other===true)}" v-for="crime in crime_data">
 				<td v-for="(item, index) in crime" v-if="index!=='code'">
 					{{ item }}
 				</td>
@@ -87,13 +133,6 @@
 		</table>
 	</div>
 
-	<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
-		integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
-		crossorigin=""></script>
-
-	<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-	<script src="map.js"></script>
 </body>
 
 </html>
