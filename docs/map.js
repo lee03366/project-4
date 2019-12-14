@@ -45,7 +45,7 @@ function Init(crime_api_url){
 
 	//Initial crime data from incidents api to use when page loads
 	var xhttp = new XMLHttpRequest();				
-	var url= `http://${host}:${port}/incidents?start_date=2019-10-01&end_date=2019-10-31`;
+	var url= `http://${crime_api_url}/incidents?start_date=2019-10-01&end_date=2019-10-31`;
 	//Making API call so that the table can be loadedwhen the page is loaded
 	xhttp.open("GET",url);
 	xhttp.send();
@@ -87,7 +87,7 @@ function Init(crime_api_url){
 					},
 					handleFilter(e){
 						e.preventDefault()
-						fetch(`http://${host}:${port}/incidents?start_date=${this.startDate}&end_date=${this.endDate}`).then(res => res.json())
+						fetch(`http://${crime_api_url}/incidents?start_date=${this.startDate}&end_date=${this.endDate}`).then(res => res.json())
 						.then(res => {
 							this.crime_data = res;
 							//console.log('I hate this', _.groupBy(Object.values(this.crime_data), 'neighborhood_number'));
