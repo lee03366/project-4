@@ -66,7 +66,7 @@ function Init(crime_api_url){
 
 	//Initial crime data from incidents api to use when page loads
 	var xhttp = new XMLHttpRequest();				
-	var url= `${crime_api_url}/incidents?start_date=2019-10-01&end_date=2019-10-31`;
+	var url= `http://${crime_api_url}/incidents?start_date=2019-10-01&end_date=2019-10-31`;
 	//Making API call so that the table can be loadedwhen the page is loaded
 	xhttp.open("GET",url);
 	xhttp.send();
