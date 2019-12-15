@@ -1,4 +1,3 @@
-
 function Prompt() {
 	$("#dialog-form").dialog({
 		autoOpen: true,
@@ -44,21 +43,43 @@ function Init(crime_api_url){
 		N17:"Capitol River"
 	}
 
+	const colorize = data => {
+		return Object.values(data).map(cur_crime => {
+			if(cur_crime.code<500 || (cur_crime.code>=800&&cur_crime.code<900)) {
+				cur_crime["violent"]=true;
+				cur_crime["property"]=false;
+				cur_crime["other"]=false;
+			}
+			else if(cur_crime.code>=500 && cur_crime.code<1800) {
+				cur_crime["violent"]=false;
+				cur_crime["property"]=true;
+				cur_crime["other"]=false;
+			}
+			else {
+				cur_crime["violent"]=false;
+				cur_crime["property"]=false;
+				cur_crime["other"]=true;
+			}
+			return cur_crime;
+		});		
+	}
+
 	//Initial crime data from incidents api to use when page loads
 	var xhttp = new XMLHttpRequest();				
-	var url= `http://${crime_api_url}/incidents?start_date=2019-10-01&end_date=2019-10-31`;
+	var url= `${crime_api_url}/incidents?start_date=2019-10-01&end_date=2019-10-31`;
 	//Making API call so that the table can be loadedwhen the page is loaded
 	xhttp.open("GET",url);
 	xhttp.send();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4 && this.status == 200) {
-			const initial_crime = JSON.parse(xhttp.responseText);
+			const initial_crime = colorize(JSON.parse(xhttp.responseText));
 			let neighborhoodCrimeCount = Object.entries(_.groupBy(Object.values(initial_crime), 'neighborhood_number')).map(([k, v]) => v.length);
 			
+			/*
 			for(let i = 0; i < Object.keys(initial_crime).length; i++) {
 				var cur_crime = initial_crime[Object.keys(initial_crime)[i]];
 				//Change neighborhood_number into the name of the neighborhood
-				cur_crime.neighborhood_number=neighborhoods["N"+cur_crime.neighborhood_number];
+				//cur_crime.neighborhood_number=neighborhoods["N"+cur_crime.neighborhood_number];
 				
 				if(cur_crime.code<500 || (cur_crime.code>=800&&cur_crime.code<900)) {
 					cur_crime["violent"]=true;
@@ -76,6 +97,7 @@ function Init(crime_api_url){
 					cur_crime["other"]=true;
 				}		
 			}
+			*/
 			
 			const app = new Vue({
 				el:"#app",
@@ -100,11 +122,11 @@ function Init(crime_api_url){
 						}
 					},
 					handleFilter(e){
-						e.preventDefault()
-						fetch(`http://${crime_api_url}}/incidents?start_date=${this.startDate}&end_date=${this.endDate}`).then(res => res.json())
+						e.preventDefault();
+						const url = `${crime_api_url}/incidents?start_date=${this.startDate}&end_date=${this.endDate}`;
+						fetch(url).then(res => res.json())
 						.then(res => {
-							this.crime_data = res;
-							//console.log('I hate this', _.groupBy(Object.values(this.crime_data), 'neighborhood_number'));
+							this.crime_data = colorize(res);
 							neighborhoodCrimeCount = Object.entries(_.groupBy(Object.values(initial_crime), 'neighborhood_number')).map(([k, v]) => v.length);
 						}).catch(err => console.log('errrrrr', err));
 					},				
