@@ -123,7 +123,7 @@ function Init(crime_api_url){
 					},
 					handleFilter(e){
 						e.preventDefault();
-						const url = `${crime_api_url}/incidents?start_date=${this.startDate}&end_date=${this.endDate}`;
+						const url = `http://${crime_api_url}/incidents?start_date=${this.startDate}&end_date=${this.endDate}`;
 						fetch(url).then(res => res.json())
 						.then(res => {
 							this.crime_data = colorize(res);
